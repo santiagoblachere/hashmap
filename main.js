@@ -1,4 +1,3 @@
-console.log("hola");
 /* if (index < 0 || index >= buckets.length) {
 	throw new Error("Trying to access index out of bound");
 } */
@@ -6,7 +5,23 @@ console.log("hola");
 class Hashmap {
 	constructor(key) {
 		this.key = key;
-		this.hashMap = Array.apply(null, Array(16)).map(function () {});
+		this.hashMap = Array(16).fill(null);
+		this.loadfactor = 0.75;
+		this.size = 0;
+		this.capacity = 16;
+	}
+	growHashMap() {
+		let oldArray = this.hashMap;
+		this.capacity *= 2;
+		this.hashMap = Array(this.capacity).fill(null);
+		oldArray.forEach((bucket) => {
+			if (bucket !== null) {
+				let key = bucket[0];
+				let value = bucket[1];
+				this.set(key, value);
+			}
+			return;
+		});
 	}
 	hash(key) {
 		let hashCode = 0;
@@ -17,12 +32,26 @@ class Hashmap {
 		return hashCode % this.hashMap.length;
 	}
 	set(key, value) {
+		let currentCapacity = this.size / this.hashMap.length;
+		if (currentCapacity >= this.loadfactor) {
+			this.growHashMap();
+		}
+
 		let hashCode = this.hash(key);
-		let bucket = [key, value];
-		this.hashMap[hashCode] = bucket;
+		while (
+			this.hashMap[hashCode] !== null &&
+			this.hashMap[hashCode][0] !== key
+		) {
+			hashCode = (hashCode + 1) % this.hashMap.length;
+		}
+		if (this.hashMap[hashCode] === null) {
+			this.size++;
+		}
+		this.hashMap[hashCode] = [key, value];
 	}
 	get(key) {
 		let index = this.hash(key);
+		console.log(index);
 		if (!this.hashMap[index]) return null;
 		return this.hashMap[index];
 	}
@@ -43,7 +72,7 @@ class Hashmap {
 		return this.hashMap.length;
 	}
 	clear() {
-		this.hashMap = Array.apply(null, Array(16)).map(function () {});
+		this.hashMap = Array.apply(null, Array(this.capacity)).map(function () {});
 	}
 	keys() {
 		let keysArray = [];
@@ -75,22 +104,19 @@ class Hashmap {
 }
 
 const hashMap = new Hashmap();
-console.log(hashMap.hash("coscu"));
-hashMap.set("coscu", "coscu te amo");
-console.log(hashMap.get("coscu"));
-console.log(hashMap.remove("coscu"));
-console.log(hashMap.remove("coscu"));
-console.log(hashMap.length());
-hashMap.set("coscu", "te amo");
+hashMap.set("apple", "red");
+hashMap.set("banana", "yellow");
+hashMap.set("carrot", "orange");
+hashMap.set("dog", "brown");
+hashMap.set("elephant", "gray");
+hashMap.set("frog", "green");
+hashMap.set("grape", "purple");
+hashMap.set("hat", "black");
+hashMap.set("ice cream", "white");
+hashMap.set("jacket", "blue");
+hashMap.set("kite", "pink");
+hashMap.set("lion", "golden");
+hashMap.set("moon", "silver");
+console.log(hashMap.keys());
 hashMap.clear();
-console.log(hashMap.get("coscu"));
-hashMap.set("coscu", "te amo");
-hashMap.set("coscuTTT", "te amo");
-console.log(hashMap.keys());
-hashMap.set("coscuJHJH", "te amo");
-console.log(hashMap.keys());
-hashMap.set("coscuGFG", "te amo");
-console.log(hashMap.keys());
-console.log(hashMap.values());
-hashMap.set("coscu", "teODIO");
-console.log(hashMap.entries());
+console.log(hashMap.length());
