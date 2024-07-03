@@ -117,6 +117,4 @@ hashMap.set("jacket", "blue");
 hashMap.set("kite", "pink");
 hashMap.set("lion", "golden");
 hashMap.set("moon", "silver");
-console.log(hashMap.keys());
 hashMap.clear();
-console.log(hashMap.length());
