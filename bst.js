@@ -84,25 +84,38 @@ class Tree {
 		}
 		return nodes;
 	}
-	inOrder() {
-		let currentNode = this.rootZero;
-		if (currentNode == null) return;
-		function leftTravel(node) {
-			if (node.left == null) return node;
-			if (node.left !== null) {
-				return leftTravel(node.left);
+	inOrder(node = this.rootZero, callback = null) {
+		let result = [];
+		function traverse(node) {
+			if (node) {
+				traverse(node.left);
+				if (callback) {
+					callback(node.data);
+				} else {
+					result.push(node.data);
+				}
+				traverse(node.right);
 			}
 		}
-		function rightTravel(node) {
-			if (node.right == null) return node;
-			if (node.right !== null) return rightTravel(node.right);
-		}
-		while (currentNode !== null) {
-			if (currentNode.left !== null) leftTravel(currentNode);
-			else {
-				if (currentNode.right !== null) rightTravel(currentNode);
+		traverse(node);
+		return callback ? null : result;
+	}
+	preOrder(node = this.rootZero, callback = null) {
+		let result = [];
+		function traverse(node) {
+			if (node) {
+				if (callback) {
+					callback(node.data);
+				} else {
+					result.push(node.data);
+				}
+				traverse(node.left);
+				traverse(node.right);
 			}
 		}
+
+		traverse(node);
+		return callback ? null : result;
 	}
 	deleteItem(value) {
 		let currentNode = this.rootZero;
@@ -160,8 +173,7 @@ tree.buildTree();
 tree.insert(6);
 tree.insert(1);
 tree.insert(7);
-
 console.log(tree);
-console.log(tree.find(44));
 console.log(tree.levelOrder());
 console.log(tree.inOrder());
+console.log(tree.preOrder());
