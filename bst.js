@@ -117,6 +117,74 @@ class Tree {
 		traverse(node);
 		return callback ? null : result;
 	}
+	postOrder(node = this.rootZero, callback = null) {
+		let result = [];
+		function traverse(node) {
+			if (node) {
+				if (node.left !== null) traverse(node.left);
+				if (node.right !== null) traverse(node.right);
+
+				if (callback) {
+					callback(node);
+				} else {
+					result.push(node.data);
+				}
+			}
+		}
+		traverse(node);
+		return callback ? null : result;
+	}
+	height(node = this.rootZero) {
+		if (node !== this.rootZero) {
+			node = this.find(node);
+		}
+		let height = 0;
+		let leftCounter = 0;
+		let rightCounter = 0;
+		function traverseHeight(node) {
+			if (node) {
+				if (node.left !== null) {
+					++leftCounter;
+					traverseHeight(node.left);
+				}
+				if (node.right !== null) {
+					++rightCounter;
+					traverseHeight(node.right);
+				}
+			}
+			if (leftCounter > rightCounter) {
+				height = leftCounter;
+			} else if (rightCounter > leftCounter) {
+				height = rightCounter;
+			} else {
+				height = leftCounter || rightCounter;
+			}
+		}
+		traverseHeight(node);
+		return height;
+	}
+	depth(node) {
+		node = this.find(node);
+		if (node === undefined) return;
+		let currentNode = this.rootZero;
+		let nodeDepth = 0;
+		let found = false;
+		while (found === false) {
+			console.log(currentNode.data, node.data, nodeDepth);
+			if (node.data < currentNode.data) {
+				currentNode = currentNode.left;
+			}
+			if (node.data > currentNode.data) {
+				currentNode = currentNode.right;
+			} else {
+				if (nodeDepth == 0 && currentNode !== this.rootZero) nodeDepth++;
+				found = true;
+				return nodeDepth;
+			}
+			++nodeDepth;
+		}
+	}
+
 	deleteItem(value) {
 		let currentNode = this.rootZero;
 		let previousNode = null;
@@ -177,3 +245,6 @@ console.log(tree);
 console.log(tree.levelOrder());
 console.log(tree.inOrder());
 console.log(tree.preOrder());
+console.log(tree.postOrder());
+// console.log(tree.height(4));
+console.log(tree.depth(3));
