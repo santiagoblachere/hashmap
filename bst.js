@@ -170,7 +170,6 @@ class Tree {
 		let nodeDepth = 0;
 		let found = false;
 		while (found === false) {
-			console.log(currentNode.data, node.data, nodeDepth);
 			if (node.data < currentNode.data) {
 				currentNode = currentNode.left;
 			}
@@ -235,6 +234,31 @@ class Tree {
 			}
 		}
 	}
+	isBalanced() {
+		let disbalances = 0;
+		this.inOrder(this.rootZero, (node) => {
+			this.find(node);
+			let height = this.height(node);
+			let depth = this.depth(node);
+			if (Math.abs(height - depth) > 1) {
+				disbalances++;
+			}
+
+			return disbalances;
+		});
+		console.log(disbalances);
+		if (disbalances > 0) return false;
+		return true;
+	}
+	reBalance() {
+		const newArray = [];
+		this.inOrder(this.rootZero, (node) => {
+			newArray.push(node);
+		});
+		this.array = newArray;
+		this.buildTree();
+		console.log(this.isBalanced());
+	}
 }
 const tree = new Tree([0, 2, 3, 4, 5]);
 tree.buildTree();
@@ -242,9 +266,11 @@ tree.insert(6);
 tree.insert(1);
 tree.insert(7);
 console.log(tree);
-console.log(tree.levelOrder());
+// console.log(tree.levelOrder());
 console.log(tree.inOrder());
-console.log(tree.preOrder());
-console.log(tree.postOrder());
-// console.log(tree.height(4));
+// console.log(tree.preOrder());
+// console.log(tree.postOrder());
+console.log(tree.height(4));
 console.log(tree.depth(3));
+console.log(tree.isBalanced());
+tree.reBalance();
